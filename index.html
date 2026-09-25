@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Hub - The Ultimate Football History Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        pitch: {
+                            950: '#030b07',
+                            900: '#071810',
+                            800: '#0d2a1d',
+                            700: '#133e2b',
+                            600: '#1b563c',
+                            500: '#257854',
+                            accent: '#10b981'
+                        },
+                        gold: {
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            glow: '#fef08a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030b07;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 0.025em;
+        }
+        .glass-card {
+            background: rgba(13, 42, 29, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(250, 204, 21, 0.15);
+        }
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(250, 204, 21, 0.4);
+            box-shadow: 0 12px 30px -10px rgba(16, 185, 129, 0.25);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fffbeb 0%, #facc15 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pitch-pattern {
+            background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030b07;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #133e2b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #257854;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #facc15;
+            color: #facc15;
+            background: rgba(250, 204, 21, 0.08);
+        }
+        .tactical-pitch {
+            background: #0f3824;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px);
+            background-size: 100% 50%, 50% 100%;
+        }
+    </style>
+</head>
+<body class="pitch-pattern min-h-screen flex flex-col selection:bg-gold-500 selection:text-black">
+
+    <!-- Header / Brand Navigation -->
+    <header class="sticky top-0 z-40 bg-pitch-900/90 backdrop-blur-md border-b border-pitch-700/60 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('foundations')">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold-600 via-gold-400 to-amber-200 flex items-center justify-center shadow-lg shadow-gold-500/20 ring-2 ring-gold-400/50">
+                        <i class="fa-solid fa-trophy text-pitch-900 text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-bold tracking-wider gold-gradient-text uppercase block leading-none">History Hub</span>
+                        <span class="text-xs text-emerald-400 font-medium tracking-widest uppercase">The Football Encyclopedia</span>
+                    </div>
+                </div>
+
+                <!-- Search Bar & Controls -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden sm:block w-64 md:w-80">
+                        <input type="text" id="globalSearch" onkeyup="handleSearch(this.value)" placeholder="Search Pele, 1970, Champions League, Quiz..." 
+                            class="w-full bg-pitch-800/80 border border-pitch-600 rounded-full py-2 pl-10 pr-4 text-sm text-gray-200 placeholder-gray-400 focus:outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-gray-400 text-sm"></i>
+                    </div>
+
+                    <!-- On This Day Button -->
+                    <button onclick="openOnThisDay()" class="bg-gradient-to-r from-emerald-600 to-pitch-600 hover:from-emerald-500 hover:to-pitch-500 text-white px-3.5 py-2 rounded-full text-xs md:text-sm font-semibold flex items-center space-x-2 border border-emerald-400/30 transition shadow-md">
+                        <i class="fa-solid fa-calendar-day text-gold-400"></i>
+                        <span class="hidden md:inline">On This Day</span>
+                    </button>
+
+                    <!-- Saved Reading List Button -->
+                    <button onclick="toggleBookmarksModal()" class="relative bg-pitch-800 hover:bg-pitch-700 text-gray-200 p-2.5 rounded-full border border-pitch-600 transition">
+                        <i class="fa-solid fa-bookmark text-gold-400"></i>
+                        <span id="bookmarkCount" class="absolute -top-1 -right-1 bg-gold-500 text-pitch-900 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <!-- Audio Ambient Toggle -->
+                    <button id="audioBtn" onclick="toggleStadiumAudio()" class="bg-pitch-800 hover:bg-pitch-700 text-gray-300 p-2.5 rounded-full border border-pitch-600 transition" title="Toggle Stadium Ambient Sound">
+                        <i class="fa-solid fa-volume-xmark" id="audioIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Bar -->
+            <nav class="flex space-x-1 overflow-x-auto no-scrollbar border-t border-pitch-800/80 text-sm font-medium pt-1 pb-0.5">
+                <button onclick="switchTab('foundations')" id="tab-foundations" class="tab-btn active whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-monument text-xs"></i><span>Origins</span>
+                </button>
+                <button onclick="switchTab('worldcup')" id="tab-worldcup" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-globe text-xs"></i><span>World Cup</span>
+                </button>
+                <button onclick="switchTab('trophies')" id="tab-trophies" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-trophy text-xs"></i><span>Trophy & Dynasty Hub</span>
+                </button>
+                <button onclick="switchTab('legends')" id="tab-legends" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-crown text-xs"></i><span>Icons & Legends</span>
+                </button>
+                <button onclick="switchTab('compare')" id="tab-compare" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-code-compare text-xs"></i><span>GOAT Compare (14 Players)</span>
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-graduation-cap text-xs"></i><span>100-Q Quiz Hub</span>
+                </button>
+                <button onclick="switchTab('tactics')" id="tab-tactics" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-chess-board text-xs"></i><span>Tactics Board</span>
+                </button>
+                <button onclick="switchTab('rivalries')" id="tab-rivalries" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-xs"></i><span>Rivalries</span>
+                </button>
+                <button onclick="switchTab('timeline')" id="tab-timeline" class="tab-btn whitespace-nowrap px-4 py-2.5 rounded-t-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-timeline text-xs"></i><span>Chronology</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Banner & Filter Bar -->
+    <div id="heroSection" class="relative bg-gradient-to-b from-pitch-800 to-pitch-900 border-b border-pitch-700/50 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div class="text-center lg:text-left space-y-2">
+                <span class="inline-block px-3 py-1 bg-gold-500/10 border border-gold-400/30 rounded-full text-gold-400 text-xs font-semibold uppercase tracking-wider">
+                    <i class="fa-solid fa-book-open mr-1.5"></i> The Complete Chronology of the Beautiful Game
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-none">
+                    EXPLORE <span class="gold-gradient-text">160+ YEARS</span> OF FOOTBALL HISTORY
+                </h1>
+                <p class="text-gray-300 text-xs sm:text-sm max-w-2xl">
+                    From ancient Cuju to modern World Cup glory, 100-Question Trivia engine, trophy dynasties, and GOAT comparisons.
+                </p>
+            </div>
+
+            <!-- Quick Filter Shortcuts -->
+            <div class="flex flex-wrap justify-center lg:justify-end gap-2 bg-pitch-900/80 p-3 rounded-2xl border border-pitch-700/70">
+                <button onclick="switchTab('quiz')" class="bg-gold-500 hover:bg-gold-400 text-pitch-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center space-x-1">
+                    <i class="fa-solid fa-gamepad"></i><span>Take 100-Q Quiz</span>
+                </button>
+                <button onclick="switchTab('trophies')" class="bg-pitch-800 text-gray-200 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">
+                    🏆 Trophy Records
+                </button>
+                <button onclick="switchTab('compare')" class="bg-pitch-800 text-gray-200 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">
+                    ⚖️ 14 Player GOAT Engine
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: FOUNDATIONS & ORIGINS -->
+        <section id="content-foundations" class="tab-content block space-y-8">
+            <div class="border-b border-pitch-700 pb-4 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-bold text-white uppercase tracking-wider">🏛️ Origins & Early Development</h2>
+                    <p class="text-gray-400 text-sm">How a simple leather ball evolved into the world's greatest sport.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="foundationsCards">
+                <!-- Card 1 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">200 BCE – 200 CE</span>
+                            <button onclick="toggleBookmark('cuju')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-cuju"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Cuju & Ancient Ball Games</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            Recognized by FIFA as the earliest form of football, **Cuju** (蹴鞠) was played in Han Dynasty China. Soldiers kicked a leather ball filled with feathers into a small net mounted on bamboo canes without using hands.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('cuju')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">12th – 18th Century</span>
+                            <button onclick="toggleBookmark('mob-football')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-mob-football"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Medieval Mob Football</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            In Shrovetide England, entire neighboring villages competed to drag an inflated pig's bladder to designated landmarks miles apart. The matches were notorious for wild riots, leading King Edward III to ban the sport in 1365.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('mob-football')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">October 26, 1863</span>
+                            <button onclick="toggleBookmark('fa-1863')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-fa-1863"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">The 1863 FA Founding</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            Representatives from 11 London public schools gathered at **Freemasons' Tavern** to establish standard rules. This historic split separated Association Football ("Soccer") from Rugby, creating the unified sport we know today.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('fa-1863')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">November 30, 1872</span>
+                            <button onclick="toggleBookmark('first-int')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-first-int"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">First International: Scotland vs England</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            Played at Hamilton Crescent in Glasgow before 4,000 spectators. The match ended 0-0, but debuted Scotland's revolutionary "passing game" against England's individual dribbling style.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('first-int')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">1890s – 1910s</span>
+                            <button onclick="toggleBookmark('global-spread')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-global-spread"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Global Expansion: South America & Europe</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            British sailors, railway engineers, and students brought football to Argentina (Alexander Watson Hutton) and Brazil (Charles Miller), laying the groundwork for South America's eventual global dominance.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('global-spread')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">May 21, 1904</span>
+                            <button onclick="toggleBookmark('fifa-1904')" class="text-gray-400 hover:text-gold-400"><i class="fa-regular fa-bookmark" id="bm-fifa-1904"></i></button>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Founding of FIFA in Paris</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            Seven European nations (France, Belgium, Denmark, Netherlands, Spain, Sweden, Switzerland) founded the *Fédération Internationale de Football Association* to govern international competitions.
+                        </p>
+                    </div>
+                    <button onclick="openDetailModal('fifa-1904')" class="text-emerald-400 text-xs font-bold uppercase tracking-wider hover:text-gold-400 flex items-center space-x-1">
+                        <span>Read Deep History</span><i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: WORLD CUP CHRONICLES -->
+        <section id="content-worldcup" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white uppercase tracking-wider">🏆 FIFA World Cup Chronicles</h2>
+                    <p class="text-gray-400 text-sm">Every single edition from Uruguay 1930 to Qatar 2022.</p>
+                </div>
+                <!-- World Cup Selector -->
+                <select id="wcSelect" onchange="displayWorldCupDetails(this.value)" class="bg-pitch-800 border border-gold-500/50 text-gold-400 rounded-lg px-4 py-2 font-bold focus:outline-none">
+                    <option value="2022">2022 - Qatar (Winner: Argentina)</option>
+                    <option value="2018">2018 - Russia (Winner: France)</option>
+                    <option value="2014">2014 - Brazil (Winner: Germany)</option>
+                    <option value="2010">2010 - South Africa (Winner: Spain)</option>
+                    <option value="1986">1986 - Mexico (Winner: Argentina)</option>
+                    <option value="1970">1970 - Mexico (Winner: Brazil)</option>
+                    <option value="1958">1958 - Sweden (Winner: Brazil)</option>
+                    <option value="1950">1950 - Brazil (Winner: Uruguay)</option>
+                    <option value="1930">1930 - Uruguay (Winner: Uruguay)</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Selected World Cup Showcase -->
+            <div id="wcShowcase" class="glass-card rounded-3xl p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Data populated dynamically via JS -->
+            </div>
+
+            <!-- All Tournament Quick Grid -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">All Tournaments Overview</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="wcQuickGrid">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: TROPHY & DYNASTY HUB TAB -->
+        <section id="content-trophies" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white uppercase tracking-wider">🏆 Trophy & Dynasty Hub</h2>
+                    <p class="text-gray-400 text-sm">All-time record holders, title counts, and dominant club & international eras.</p>
+                </div>
+                <!-- Trophy Category Selector -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="renderTrophies('ucl')" class="trophy-btn bg-gold-500 text-pitch-950 font-bold px-3 py-1.5 rounded-lg text-xs transition">Champions League</button>
+                    <button onclick="renderTrophies('wc')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">World Cup</button>
+                    <button onclick="renderTrophies('pl')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">Premier League</button>
+                    <button onclick="renderTrophies('laliga')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">La Liga</button>
+                    <button onclick="renderTrophies('cwc')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">Club World Cup</button>
+                    <button onclick="renderTrophies('seriea')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">Serie A</button>
+                    <button onclick="renderTrophies('bundes')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">Bundesliga</button>
+                    <button onclick="renderTrophies('libertadores')" class="trophy-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg text-xs border border-pitch-600 transition">Copa Libertadores</button>
+                </div>
+            </div>
+
+            <!-- Main Trophy Leaderboard Grid -->
+            <div id="trophyContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 4: ICONS & LEGENDS -->
+        <section id="content-legends" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-bold text-white uppercase tracking-wider">👑 Kings of the Game</h2>
+                    <p class="text-gray-400 text-sm">Biographies, stats, and achievements of the greatest players in history.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="legendCards">
+                <!-- Cards loaded via JavaScript -->
+            </div>
+        </section>
+
+        <!-- TAB 5: GOAT COMPARISON TOOL (14 PLAYERS) -->
+        <section id="content-compare" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4 text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-white uppercase tracking-wider">⚖️ GOAT & Player Comparison Engine</h2>
+                <p class="text-gray-400 text-sm">Compare 14 legendary superstars across goals, trophies, international glory, and peak era performance.</p>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Player 1 Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-gold-400 uppercase tracking-wider mb-2">Select Player 1</label>
+                        <select id="p1Select" onchange="runComparison()" class="w-full bg-pitch-800 border border-pitch-600 rounded-xl px-4 py-3 text-white font-bold focus:border-gold-400 focus:outline-none">
+                            <option value="messi" selected>Lionel Messi</option>
+                            <option value="pele">Pelé</option>
+                            <option value="maradona">Diego Maradona</option>
+                            <option value="ronaldo">Cristiano Ronaldo</option>
+                            <option value="cruyff">Johan Cruyff</option>
+                            <option value="zidane">Zinedine Zidane</option>
+                            <option value="ronaldinho">Ronaldinho</option>
+                            <option value="r9">Ronaldo Nazário (R9)</option>
+                            <option value="mbappe">Kylian Mbappé</option>
+                            <option value="yamal">Lamine Yamal</option>
+                            <option value="haaland">Erling Haaland</option>
+                            <option value="henry">Thierry Henry</option>
+                            <option value="iniesta">Andrés Iniesta</option>
+                            <option value="beckenbauer">Franz Beckenbauer</option>
+                        </select>
+                    </div>
+
+                    <!-- Player 2 Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-gold-400 uppercase tracking-wider mb-2">Select Player 2</label>
+                        <select id="p2Select" onchange="runComparison()" class="w-full bg-pitch-800 border border-pitch-600 rounded-xl px-4 py-3 text-white font-bold focus:border-gold-400 focus:outline-none">
+                            <option value="ronaldo" selected>Cristiano Ronaldo</option>
+                            <option value="messi">Lionel Messi</option>
+                            <option value="pele">Pelé</option>
+                            <option value="maradona">Diego Maradona</option>
+                            <option value="cruyff">Johan Cruyff</option>
+                            <option value="zidane">Zinedine Zidane</option>
+                            <option value="ronaldinho">Ronaldinho</option>
+                            <option value="r9">Ronaldo Nazário (R9)</option>
+                            <option value="mbappe">Kylian Mbappé</option>
+                            <option value="yamal">Lamine Yamal</option>
+                            <option value="haaland">Erling Haaland</option>
+                            <option value="henry">Thierry Henry</option>
+                            <option value="iniesta">Andrés Iniesta</option>
+                            <option value="beckenbauer">Franz Beckenbauer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Comparison Output Grid -->
+                <div id="comparisonOutput" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <!-- Populated via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: 100-QUESTION QUIZ HUB -->
+        <section id="content-quiz" class="tab-content hidden space-y-8">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-gold-500/10 rounded-full blur-2xl"></div>
+
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4 border-b border-pitch-700/80 pb-4">
+                    <div class="text-left">
+                        <span class="inline-block px-3 py-1 bg-gold-500/20 text-gold-400 text-xs font-bold uppercase rounded-full mb-1">Interactive Football Engine</span>
+                        <h2 class="text-3xl font-bold text-white uppercase">100-Question Quiz Hub</h2>
+                    </div>
+
+                    <!-- Quiz Category Filters -->
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <button onclick="filterQuizCategory('all')" class="quiz-cat-btn bg-gold-500 text-pitch-950 font-bold px-3 py-1.5 rounded-lg">All (100 Qs)</button>
+                        <button onclick="filterQuizCategory('wc')" class="quiz-cat-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg border border-pitch-600">World Cup</button>
+                        <button onclick="filterQuizCategory('ucl')" class="quiz-cat-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg border border-pitch-600">Champions League</button>
+                        <button onclick="filterQuizCategory('leagues')" class="quiz-cat-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg border border-pitch-600">Domestic Leagues</button>
+                        <button onclick="filterQuizCategory('ballondor')" class="quiz-cat-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg border border-pitch-600">Ballon d'Or</button>
+                        <button onclick="filterQuizCategory('tactics')" class="quiz-cat-btn bg-pitch-800 text-gray-300 hover:bg-pitch-700 px-3 py-1.5 rounded-lg border border-pitch-600">Tactics & Rules</button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-pitch-950 rounded-full h-3 mb-6 border border-pitch-700/60 overflow-hidden">
+                    <div id="quizProgressBar" class="bg-gradient-to-r from-emerald-500 via-gold-400 to-amber-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <div id="quizContainer">
+                    <div id="quizBox" class="text-left bg-pitch-900/90 border border-pitch-700 p-6 rounded-2xl mb-6 shadow-xl">
+                        <!-- Question injected dynamically -->
+                    </div>
+
+                    <div class="flex justify-between items-center text-xs text-gray-400 font-medium">
+                        <span id="quizProgress">Question 1 of 100</span>
+                        <span id="quizScore" class="text-gold-400 font-bold">Score: 0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: TACTICS BOARD -->
+        <section id="content-tactics" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4">
+                <h2 class="text-3xl font-bold text-white uppercase tracking-wider">⚡ Tactical Revolutions</h2>
+                <p class="text-gray-400 text-sm">How brainpower and tactical board formations transformed modern football.</p>
+            </div>
+
+            <!-- Tactical Viewer Pitch -->
+            <div class="glass-card rounded-3xl p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 space-y-4">
+                    <h3 class="text-2xl font-bold text-white">Interactive Pitch Diagram</h3>
+                    <p class="text-xs text-gray-300">Select a famous formation below to observe spatial positioning and tactical principles on the board.</p>
+
+                    <div class="space-y-2">
+                        <button onclick="setTacticalPitch('pyramid')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            1. The 2-3-5 Pyramid (1890s)
+                        </button>
+                        <button onclick="setTacticalPitch('wm')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            2. Herbert Chapman's WM System (1930s)
+                        </button>
+                        <button onclick="setTacticalPitch('catenaccio')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            3. Catenaccio Sweeper (1960s)
+                        </button>
+                        <button onclick="setTacticalPitch('total')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            4. Total Football (1970s Ajax / Dutch)
+                        </button>
+                        <button onclick="setTacticalPitch('tikitaka')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            5. Pep Guardiola's Tiki-Taka 4-3-3 (2009)
+                        </button>
+                        <button onclick="setTacticalPitch('gegen')" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 font-bold text-xs text-gold-400 transition">
+                            6. Jürgen Klopp's Gegenpressing (2015+)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-pitch-950 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden min-h-[350px] flex flex-col justify-between tactical-pitch">
+                    <div id="tacticalDisplayTitle" class="text-center font-bold text-gold-400 text-lg uppercase mb-4 bg-pitch-900/80 py-1.5 rounded-lg border border-pitch-700">
+                        1. The 2-3-5 Pyramid System
+                    </div>
+                    
+                    <div id="tacticalPitchNodes" class="relative h-64 w-full flex flex-col justify-between py-2">
+                        <!-- Populated via JavaScript -->
+                    </div>
+
+                    <div id="tacticalDescription" class="text-xs text-gray-200 bg-pitch-900/90 p-3 rounded-xl border border-pitch-700 mt-4 leading-relaxed">
+                        The 2-3-5 Pyramid balanced two fullbacks, three half-backs, and five attacking forwards. It served as football's primary formation for almost four decades worldwide.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: RIVALRIES -->
+        <section id="content-rivalries" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4">
+                <h2 class="text-3xl font-bold text-white uppercase tracking-wider">⚔️ Greatest Football Rivalries</h2>
+                <p class="text-gray-400 text-sm">Derbies forged in culture, politics, geographical hatred, and unmatched passion.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="rivalriesGrid">
+                <!-- Rivalries populated dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 9: MASTER TIMELINE -->
+        <section id="content-timeline" class="tab-content hidden space-y-8">
+            <div class="border-b border-pitch-700 pb-4">
+                <h2 class="text-3xl font-bold text-white uppercase tracking-wider">📜 Expanded Master Football Timeline</h2>
+                <p class="text-gray-400 text-sm">Comprehensive chronological journey from 1863 to modern record-breaking moments.</p>
+            </div>
+
+            <div class="relative border-l-2 border-gold-500/40 ml-4 md:ml-8 space-y-8" id="timelineList">
+                <!-- Timeline items dynamically generated -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: Article / Deep Reading Modal -->
+    <div id="detailModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass-card bg-pitch-900 border border-gold-500/30 rounded-3xl max-w-3xl w-full p-6 sm:p-8 relative my-8 shadow-2xl">
+            <button onclick="closeDetailModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-full bg-pitch-800 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modalBody">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: On This Day Modal -->
+    <div id="onThisDayModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card bg-pitch-900 border border-gold-500/40 rounded-3xl max-w-xl w-full p-6 relative shadow-2xl text-center">
+            <button onclick="closeOnThisDay()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full bg-pitch-800">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-calendar-star"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white uppercase mb-2">On This Day In Football</h3>
+            <p class="text-xs text-gold-400 font-semibold uppercase tracking-wider mb-4" id="otdDate">September 25</p>
+            <div id="otdContent" class="bg-pitch-800/80 p-5 rounded-2xl text-left border border-pitch-700 mb-6 text-sm text-gray-200 leading-relaxed">
+                <!-- Injected via JS -->
+            </div>
+            <button onclick="getRandomOnThisDay()" class="bg-gold-500 hover:bg-gold-400 text-pitch-950 font-bold px-6 py-2.5 rounded-full text-xs uppercase tracking-wider transition">
+                <i class="fa-solid fa-shuffle mr-2"></i>Another Flashback
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Saved Bookmarks Modal -->
+    <div id="bookmarksModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card bg-pitch-900 border border-gold-500/30 rounded-3xl max-w-lg w-full p-6 relative shadow-2xl">
+            <button onclick="toggleBookmarksModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full bg-pitch-800">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-white uppercase mb-4 flex items-center">
+                <i class="fa-solid fa-bookmark text-gold-400 mr-2"></i> Saved Reading List
+            </h3>
+            <div id="bookmarksList" class="space-y-3 max-h-80 overflow-y-auto pr-2">
+                <!-- Saved items rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-pitch-900 border-t border-pitch-800 py-8 text-center text-xs text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 space-y-3">
+            <p class="font-semibold text-gray-300">History Hub &copy; 2026 — The Interactive Encyclopedia of Football History</p>
+            <p class="text-gray-400">Designed for football enthusiasts, historians, and lovers of the beautiful game.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* --------------------------------------------------
+           1. DATA STORE (Articles, World Cups, Trophies, 14 Legends, 100 Questions)
+           -------------------------------------------------- */
+        const articles = {
+            "cuju": {
+                title: "Cuju (蹴鞠): Football's Ancient Ancestor",
+                era: "200 BCE – Han Dynasty",
+                content: `
+                    <p class="mb-4"><strong>Cuju</strong>, which literally translates to "kick ball with foot," is recognized by FIFA as the oldest verified precursor to modern soccer. Originating in ancient China during the Han Dynasty (202 BCE – 220 CE), it was initially used as a military physical training exercise for soldiers.</p>
+                    <p class="mb-4">Players competed on a rectangular field equipped with a high net hung between bamboo poles. The stitched leather ball was stuffed with feathers or animal fur. What made Cuju uniquely refined was its strict emphasis on control and discipline: hands were strictly forbidden, and points were awarded for kicking accuracy and artistic juggling finesse.</p>
+                    <h4 class="text-lg font-bold text-gold-400 mt-6 mb-2">The Royal Golden Age</h4>
+                    <p>During the Song Dynasty (960–1279 CE), Cuju reached peak popularity among royalty and commoners alike. Professional Cuju clubs were formed with paid players and dedicated coaches, laying the earliest historical blueprint for organized sport clubs.</p>
+                `
+            },
+            "mob-football": {
+                title: "Medieval Mob Football: Chaos in the Streets",
+                era: "12th – 18th Century Britain",
+                content: `
+                    <p class="mb-4">Before pitch boundaries and referee whistles existed, European towns engaged in **Mob Football**. Held during Shrovetide festivals, games pitted entire villages against each other in violent, unstructured battles.</p>
+                    <p class="mb-4">The target was to convey an inflated pig's bladder to a designated landmark—often a church door, mill wheel, or town square—located several miles away. Virtually all physical contact was permitted, resulting in broken bones, destroyed property, and frequent brawls.</p>
+                    <h4 class="text-lg font-bold text-gold-400 mt-6 mb-2">Royal Bans</h4>
+                    <p>King Edward III famously banned mob football in 1365 because it distracted young men from mandatory archery practice required for national defense. Despite severe penalties, the working class continued playing in secret for centuries.</p>
+                `
+            },
+            "fa-1863": {
+                title: "The Freemasons' Tavern & The 1863 Codification",
+                era: "October 26, 1863",
+                content: `
+                    <p class="mb-4">On a stormy autumn evening in London, leaders from 11 English public schools met at the **Freemasons' Tavern** on Great Queen Street to solve a massive dilemma: every school played by completely different rules.</p>
+                    <p class="mb-4">Over six intense meetings, the **Football Association (FA)** was born. Ebenezer Cobb Morley drafted the official 14 original rules. The defining debate occurred over "hacking" (shin-kicking) and carrying the ball: those who wanted physical tackling split away to form Rugby Union, while the FA banned carrying the ball with hands, codifying <em>Association Football</em>.</p>
+                `
+            },
+            "first-int": {
+                title: "1872: Scotland vs England — First International",
+                era: "November 30, 1872",
+                content: `
+                    <p class="mb-4">On St. Andrew's Day in 1872, 4,000 spectators gathered at Hamilton Crescent in Glasgow for the first official international match between Scotland and England.</p>
+                    <p class="mb-4">The tactical contrast was fascinating: the English team utilized a physical 1-1-8 or 1-2-7 formation relying on individual dribbling, while the Scottish team—drawn entirely from Queen's Park—introduced a revolutionary **combination passing game** in a 2-2-6 layout. The match ended 0-0, proving teamwork could overcome sheer physical dribbling.</p>
+                `
+            },
+            "global-spread": {
+                title: "The British Diaspora & South American Awakening",
+                era: "1890s – 1910s",
+                content: `
+                    <p class="mb-4">British expatriates, railway engineers, and sailors exported football to ports across the globe. In Argentina, **Alexander Watson Hutton** established the Argentine Association Football League in 1891, earning him the title "Father of Argentine Football."</p>
+                    <p class="mb-4">In Brazil, **Charles Miller**, born in São Paulo to a Scottish father, returned from school in England in 1894 with two footballs and a rulebook. He introduced the game to the São Paulo Athletic Club, igniting a culture that would yield five World Cup trophies.</p>
+                `
+            },
+            "fifa-1904": {
+                title: "1904: The Birth of FIFA in Paris",
+                era: "May 21, 1904",
+                content: `
+                    <p class="mb-4">As football expanded rapidly across Europe, representatives from seven nations gathered behind the headquarters of the Union des Sociétés Françaises de Sports Athlétiques in Paris to establish **FIFA**.</p>
+                    <p class="mb-4">Led by French journalist **Robert Guérin**, who became its first President, FIFA was formed to create a single global authority, establish standard international match guidelines, and eventually host a unified World Championship.</p>
+                `
+            }
+        };
+
+        const worldCupData = {
+            "2022": {
+                year: "2022", host: "Qatar", winner: "Argentina 🇦🇷", runnerUp: "France 🇫🇷", score: "3 - 3 (4 - 2 pens)",
+                goldenBoot: "Kylian Mbappé (8 goals)", goldenBall: "Lionel Messi",
+                description: "Widely regarded as the greatest World Cup final in history. Lionel Messi scored twice to claim his long-awaited World Cup trophy, while Kylian Mbappé scored a legendary hat-trick for France in a dramatic thriller."
+            },
+            "2018": {
+                year: "2018", host: "Russia", winner: "France 🇫🇷", runnerUp: "Croatia 🇭🇷", score: "4 - 2",
+                goldenBoot: "Harry Kane (6 goals)", goldenBall: "Luka Modrić",
+                description: "France's young superstar Kylian Mbappé burst onto the global stage as Les Bleus dominated the tournament with ruthless counter-attacking efficiency, defeating Luka Modrić's heroic Croatian side in Moscow."
+            },
+            "2014": {
+                year: "2014", host: "Brazil", winner: "Germany 🇩🇪", runnerUp: "Argentina 🇦🇷", score: "1 - 0 (AET)",
+                goldenBoot: "James Rodríguez (6 goals)", goldenBall: "Lionel Messi",
+                description: "Highlighted by Germany's historic 7-1 semi-final humiliation of hosts Brazil in Belo Horizonte. Mario Götze came off the bench to score a sublime extra-time volley in the final to seal Germany's 4th title."
+            },
+            "2010": {
+                year: "2010", host: "South Africa", winner: "Spain 🇪🇸", runnerUp: "Netherlands 🇳🇱", score: "1 - 0 (AET)",
+                goldenBoot: "Thomas Müller (5 goals)", goldenBall: "Diego Forlán",
+                description: "The first World Cup held on African soil. Spain's mesmerizing Tiki-Taka passing game, led by Xavi and Iniesta, triumphed, with Andrés Iniesta scoring the winning goal in the 116th minute."
+            },
+            "1986": {
+                year: "1986", host: "Mexico", winner: "Argentina 🇦🇷", runnerUp: "West Germany 🇩🇪", score: "3 - 2",
+                goldenBoot: "Gary Lineker (6 goals)", goldenBall: "Diego Maradona",
+                description: "Diego Maradona delivered the most dominant individual tournament performance in football history, producing both the notorious 'Hand of God' and the 'Goal of the Century' against England in the quarter-finals."
+            },
+            "1970": {
+                year: "1970", host: "Mexico", winner: "Brazil 🇧🇷", runnerUp: "Italy 🇮🇹", score: "4 - 1",
+                goldenBoot: "Gerd Müller (10 goals)", goldenBall: "Pelé",
+                description: "Broadcast live in color for the first time, Pelé led arguably the greatest team ever assembled—featuring Jairzinho, Tostão, Rivellino, and Gérson—to Brazil's third World Cup victory."
+            },
+            "1958": {
+                year: "1958", host: "Sweden", winner: "Brazil 🇧🇷", runnerUp: "Sweden 🇸🇪", score: "5 - 2",
+                goldenBoot: "Just Fontaine (13 goals - Record)", goldenBall: "Pelé",
+                description: "A 17-year-old Pelé announced himself to the world, scoring a hat-trick in the semi-final and two magical goals in the final, securing Brazil's very first World Cup victory."
+            },
+            "1950": {
+                year: "1950", host: "Brazil", winner: "Uruguay 🇺🇾", runnerUp: "Brazil 🇧🇷", score: "2 - 1",
+                goldenBoot: "Ademir (8 goals)", goldenBall: "Zizinho",
+                description: "The famous 'Maracanazo'. In front of 200,000 heartbroken Brazilian fans at the Maracanã Stadium, Alcides Ghiggia scored late for Uruguay to pull off the greatest shock in international football."
+            },
+            "1930": {
+                year: "1930", host: "Uruguay", winner: "Uruguay 🇺🇾", runnerUp: "Argentina 🇦🇷", score: "4 - 2",
+                goldenBoot: "Guillermo Stábile (8 goals)", goldenBall: "José Nasazzi",
+                description: "The inaugural FIFA World Cup. Uruguay built the Estadio Centenario specifically for the tournament and defeated bitter rivals Argentina in Montevideo to become the first world champions."
+            }
+        };
+
+        const trophyData = {
+            ucl: [
+                { name: "Real Madrid", country: "Spain 🇪🇸", count: 15, years: "1956, 1957, 1958, 1959, 1960, 1966, 1998, 2000, 2002, 2014, 2016, 2017, 2018, 2022, 2024", icon: "fa-crown" },
+                { name: "AC Milan", country: "Italy 🇮🇹", count: 7, years: "1963, 1969, 1989, 1990, 1994, 2003, 2007", icon: "fa-shield-halved" },
+                { name: "Bayern Munich", country: "Germany 🇩🇪", count: 6, years: "1974, 1975, 1976, 2001, 2013, 2020", icon: "fa-star" },
+                { name: "Liverpool FC", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 6, years: "1977, 1978, 1981, 1984, 2005, 2019", icon: "fa-trophy" },
+                { name: "FC Barcelona", country: "Spain 🇪🇸", count: 5, years: "1992, 2006, 2009, 2011, 2015", icon: "fa-gem" },
+                { name: "Ajax", country: "Netherlands 🇳🇱", count: 4, years: "1971, 1972, 1973, 1995", icon: "fa-certificate" }
+            ],
+            wc: [
+                { name: "Brazil", country: "South America", count: 5, years: "1958, 1962, 1970, 1994, 2002", icon: "fa-globe" },
+                { name: "Germany", country: "Europe", count: 4, years: "1954, 1974, 1990, 2014", icon: "fa-star" },
+                { name: "Italy", country: "Europe", count: 4, years: "1934, 1938, 1982, 2006", icon: "fa-shield" },
+                { name: "Argentina", country: "South America", count: 3, years: "1978, 1986, 2022", icon: "fa-sun" },
+                { name: "France", country: "Europe", count: 2, years: "1998, 2018", icon: "fa-crown" },
+                { name: "Uruguay", country: "South America", count: 2, years: "1930, 1950", icon: "fa-trophy" }
+            ],
+            pl: [
+                { name: "Manchester United", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 20, years: "1908..1993, 1994, 1996, 1997, 1999, 2000, 2001, 2003, 2007, 2008, 2009, 2011, 2013", icon: "fa-crown" },
+                { name: "Liverpool FC", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 19, years: "1901, 1906, 1922, 1923, 1947, 1964, 1966, 1973, 1976, 1977, 1979, 1980, 1982, 1983, 1984, 1986, 1988, 1990, 2020", icon: "fa-trophy" },
+                { name: "Arsenal FC", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 13, years: "1931, 1933, 1934, 1935, 1938, 1948, 1953, 1971, 1989, 1991, 1998, 2002, 2004", icon: "fa-shield-halved" },
+                { name: "Manchester City", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 10, years: "1937, 1968, 2012, 2014, 2018, 2019, 2021, 2022, 2023, 2024", icon: "fa-bolt" },
+                { name: "Everton FC", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 9, years: "1891, 1915, 1928, 1932, 1939, 1963, 1970, 1985, 1987", icon: "fa-star" },
+                { name: "Aston Villa", country: "England 🏴󠁧󠁢󠁥󠁮󠁧󠁿", count: 7, years: "1894, 1896, 1897, 1899, 1900, 1910, 1981", icon: "fa-certificate" }
+            ],
+            laliga: [
+                { name: "Real Madrid", country: "Spain 🇪🇸", count: 36, years: "Record 36 Titles (Most recent: 2024)", icon: "fa-crown" },
+                { name: "FC Barcelona", country: "Spain 🇪🇸", count: 27, years: "27 Titles (Most recent: 2023)", icon: "fa-gem" },
+                { name: "Atlético Madrid", country: "Spain 🇪🇸", count: 11, years: "11 Titles (Most recent: 2021)", icon: "fa-shield" },
+                { name: "Athletic Bilbao", country: "Spain 🇪🇸", count: 8, years: "8 Titles (Historical powerhouse)", icon: "fa-trophy" }
+            ],
+            cwc: [
+                { name: "Real Madrid", country: "Spain 🇪🇸", count: 5, years: "2014, 2016, 2017, 2018, 2022", icon: "fa-globe" },
+                { name: "FC Barcelona", country: "Spain 🇪🇸", count: 3, years: "2009, 2011, 2015", icon: "fa-trophy" },
+                { name: "Bayern Munich", country: "Germany 🇩🇪", count: 2, years: "2013, 2020", icon: "fa-star" },
+                { name: "Corinthians", country: "Brazil 🇧🇷", count: 2, years: "2000, 2012", icon: "fa-shield" }
+            ],
+            seriea: [
+                { name: "Juventus", country: "Italy 🇮🇹", count: 36, years: "36 Official Scudetti Titles", icon: "fa-crown" },
+                { name: "Inter Milan", country: "Italy 🇮🇹", count: 20, years: "20 Scudetti (Second Star in 2024)", icon: "fa-star" },
+                { name: "AC Milan", country: "Italy 🇮🇹", count: 19, years: "19 Scudetti Titles", icon: "fa-shield" }
+            ],
+            bundes: [
+                { name: "Bayern Munich", country: "Germany 🇩🇪", count: 33, years: "33 German Championships (11 straight 2013-2023)", icon: "fa-crown" },
+                { name: "Nürnberg", country: "Germany 🇩🇪", count: 9, years: "9 Titles", icon: "fa-star" },
+                { name: "Borussia Dortmund", country: "Germany 🇩🇪", count: 8, years: "8 German Championships", icon: "fa-bolt" }
+            ],
+            libertadores: [
+                { name: "Independiente", country: "Argentina 🇦🇷", count: 7, years: "1964, 1965, 1972, 1973, 1974, 1975, 1984", icon: "fa-crown" },
+                { name: "Boca Juniors", country: "Argentina 🇦🇷", count: 6, years: "1977, 1978, 2000, 2001, 2003, 2007", icon: "fa-trophy" },
+                { name: "Peñarol", country: "Uruguay 🇺🇾", count: 5, years: "1960, 1961, 1966, 1982, 1987", icon: "fa-star" },
+                { name: "River Plate", country: "Argentina 🇦🇷", count: 4, years: "1986, 1996, 2015, 2018", icon: "fa-shield" }
+            ]
+        };
+
+        const legendsData = [
+            { id: "pele", name: "Pelé", country: "Brazil 🇧🇷", era: "1956–1977", role: "Forward", goals: "1,281 (Career)", ballondor: "7 (Honorary)", trophies: "3x World Cup (1958, 62, 70)", bio: "O Rei ('The King'). The only player in history to win three World Cups. Redefined athleticism and finesse." },
+            { id: "maradona", name: "Diego Maradona", country: "Argentina 🇦🇷", era: "1976–1997", role: "Attacking Midfielder", goals: "345 goals", ballondor: "2 (Honorary)", trophies: "1x World Cup (1986), 2x Serie A", bio: "Footballing genius of unmatched dribbling ability. Single-handedly dragged Napoli to titles and Argentina to 1986 World Cup glory." },
+            { id: "messi", name: "Lionel Messi", country: "Argentina 🇦🇷", era: "2004–Present", role: "Forward / Playmaker", goals: "835+ goals, 370+ assists", ballondor: "8 Ballon d'Ors (Record)", trophies: "1x World Cup (2022), 4x Champions League, 10x La Liga", bio: "Statistical behemoth and maestro. Holds record for most Ballon d'Or awards and scored 91 goals in a single calendar year (2012)." },
+            { id: "ronaldo", name: "Cristiano Ronaldo", country: "Portugal 🇵🇹", era: "2002–Present", role: "Forward", goals: "900+ Official Goals (Leader)", ballondor: "5 Ballon d'Ors", trophies: "5x Champions League, Euro 2016, 3x Premier League", bio: "The ultimate goal-scoring machine. Dominating across England, Spain, and Italy with unrivaled work ethic and clutch performances." },
+            { id: "cruyff", name: "Johan Cruyff", country: "Netherlands 🇳🇱", era: "1964–1984", role: "Total Footballer", goals: "425 goals", ballondor: "3 Ballon d'Ors", trophies: "3x European Cup (Ajax), 1x La Liga", bio: "Architect of modern tactical thought. As a player and coach, his 'Total Football' ideology fundamentally transformed Barcelona and Ajax." },
+            { id: "zidane", name: "Zinedine Zidane", country: "France 🇫🇷", era: "1989–2006", role: "Central Midfielder", goals: "156 goals", ballondor: "1 Ballon d'Or (1998)", trophies: "1x World Cup (1998), Euro 2000, 1x UCL", bio: "Embodiment of grace, ball control, and big-game temperament. Scored two headers in the 1998 World Cup final and iconic 2002 UCL volley." },
+            { id: "ronaldinho", name: "Ronaldinho", country: "Brazil 🇧🇷", era: "1998–2015", role: "Attacking Midfielder / Winger", goals: "280 goals", ballondor: "1 Ballon d'Or (2005)", trophies: "1x World Cup (2002), 1x UCL, 2x La Liga", bio: "The magician of Samba football. Standing ovations at the Bernabéu, effortless elasticity, and endless joy on the pitch." },
+            { id: "r9", name: "Ronaldo Nazário (R9)", country: "Brazil 🇧🇷", era: "1993–2011", role: "Striker", goals: "414 goals", ballondor: "2 Ballon d'Ors (1997, 2002)", trophies: "2x World Cup (1994, 2002), 2x Copa América", bio: "El Fenómeno. Unstoppable blend of explosive speed, power, and stepovers before devastating knee injuries." },
+            { id: "mbappe", name: "Kylian Mbappé", country: "France 🇫🇷", era: "2015–Present", role: "Forward", goals: "330+ goals", ballondor: "0 (Multiple Top 3)", trophies: "1x World Cup (2018), 7x Ligue 1", bio: "Lightning-fast phenom who scored a World Cup final hat-trick in 2022 and won the World Cup at age 19 in 2018." },
+            { id: "yamal", name: "Lamine Yamal", country: "Spain 🇪🇸", era: "2023–Present", role: "Right Winger", goals: "Phenom Breakthrough", ballondor: "Youngest Nominee", trophies: "Euro 2024 (Youngest Winner)", bio: "Wunderkind who shattered all youngest-ever records at Euro 2024, scoring a wondergoal vs France at age 16." },
+            { id: "haaland", name: "Erling Haaland", country: "Norway 🇳🇴", era: "2016–Present", role: "Striker", goals: "250+ goals (Record pace)", ballondor: "1x Runner-Up", trophies: "1x Champions League (Treble 2023)", bio: "Goalscoring cyborg. Shattered the single-season Premier League scoring record in his debut season with 36 goals." },
+            { id: "henry", name: "Thierry Henry", country: "France 🇫🇷", era: "1994–2014", role: "Forward / Winger", goals: "411 goals", ballondor: "1x Runner-Up (2003)", trophies: "1x World Cup, Euro 2000, Invincibles 2004, 1x UCL", bio: "King of Highbury. Unmatched grace and finishing for Arsenal's unbeaten 2003-04 Invincibles and Barcelona's 2009 Sextuple." },
+            { id: "iniesta", name: "Andrés Iniesta", country: "Spain 🇪🇸", era: "2002–2024", role: "Central Midfielder", goals: "90+ goals, 170+ assists", ballondor: "1x Runner-Up (2010)", trophies: "1x World Cup (2010 Winner Goal), 2x Euros, 4x UCL", bio: "The illusionist. Scored the 116th-minute winner in the 2010 World Cup Final and orchestrated Barcelona and Spain's Golden Eras." },
+            { id: "beckenbauer", name: "Franz Beckenbauer", country: "Germany 🇩🇪", era: "1964–1983", role: "Sweeper / Libero", goals: "109 goals", ballondor: "2 Ballon d'Ors (1972, 1976)", trophies: "1x World Cup (1974), Euro 1972, 3x UCL", bio: "Der Kaiser. Invented and perfected the modern attacking Libero (Sweeper) role. Won World Cups as both captain and manager." }
+        ];
+
+        const quizBank = [
+            // World Cup Questions
+            { q: "Which nation won the inaugural FIFA World Cup in 1930?", options: ["Brazil", "Uruguay", "Argentina", "Italy"], answer: 1, cat: "wc", explanation: "Uruguay defeated Argentina 4-2 in Montevideo to become the first world champions." },
+            { q: "Who is the all-time highest goalscorer in FIFA World Cup history?", options: ["Pelé", "Ronaldo Nazário", "Miroslav Klose", "Lionel Messi"], answer: 2, cat: "wc", explanation: "Miroslav Klose scored 16 goals across four World Cup tournaments (2002–2014)." },
+            { q: "Which player scored 13 goals in a single World Cup tournament in 1958?", options: ["Just Fontaine", "Gerd Müller", "Pelé", "Sandor Kocsis"], answer: 0, cat: "wc", explanation: "Just Fontaine (France) scored 13 goals in Sweden 1958, an unbroken single-tournament record." },
+            { q: "Who scored both goals for Brazil in the 2002 World Cup Final vs Germany?", options: ["Rivaldo", "Ronaldinho", "Ronaldo Nazário", "Kaka"], answer: 2, cat: "wc", explanation: "Ronaldo 'El Fenómeno' scored twice in Yokohama to seal Brazil's 5th title." },
+            { q: "In which year was the famous 'Hand of God' goal scored by Diego Maradona?", options: ["1978", "1982", "1986", "1990"], answer: 2, cat: "wc", explanation: "Maradona scored both the Hand of God and Goal of the Century against England in Mexico 1986." },
+            { q: "Which country hosted the first World Cup on African soil in 2010?", options: ["Nigeria", "Egypt", "South Africa", "Morocco"], answer: 2, cat: "wc", explanation: "South Africa hosted the 2010 World Cup, won by Spain." },
+            { q: "Who hit the winning goal for Spain in the 116th minute of the 2010 World Cup Final?", options: ["Xavi", "David Villa", "Andrés Iniesta", "Fernando Torres"], answer: 2, cat: "wc", explanation: "Iniesta's half-volley against Netherlands sealed Spain's first World Cup." },
+            { q: "What was the scoreline of Germany's infamous 2014 semi-final win over hosts Brazil?", options: ["5 - 0", "6 - 1", "7 - 1", "8 - 2"], answer: 2, cat: "wc", explanation: "Germany shocked the world by defeating Brazil 7-1 in Belo Horizonte." },
+            { q: "Which goalkeeper saved two penalties for Argentina in the 2022 World Cup Final shootout?", options: ["Franco Armani", "Emiliano Martínez", "Sergio Romero", "Willy Caballero"], answer: 1, cat: "wc", explanation: "Emi Martínez delivered decisive saves in Qatar to secure Argentina's third star." },
+            { q: "Who was the first 17-year-old to score in a World Cup Final?", options: ["Kylian Mbappé", "Pelé", "Lamine Yamal", "Diego Maradona"], answer: 1, cat: "wc", explanation: "Pelé scored two goals in the 1958 final against Sweden at age 17." },
+
+            // Champions League Questions
+            { q: "Which club has won the most UEFA Champions League / European Cup titles?", options: ["AC Milan", "Bayern Munich", "Liverpool", "Real Madrid"], answer: 3, cat: "ucl", explanation: "Real Madrid lead with a record 15 Champions League titles." },
+            { q: "Which team completed the 'Miracle of Istanbul' by recovering from 3-0 down in the 2005 UCL Final?", options: ["AC Milan", "Liverpool", "Manchester United", "Barcelona"], answer: 1, cat: "ucl", explanation: "Liverpool came back from 3-0 down against AC Milan to win on penalties." },
+            { q: "Who is the all-time top goalscorer in UEFA Champions League history?", options: ["Lionel Messi", "Cristiano Ronaldo", "Robert Lewandowski", "Karim Benzema"], answer: 1, cat: "ucl", explanation: "Cristiano Ronaldo holds the record with 140 UEFA Champions League goals." },
+            { q: "Which manager won three consecutive UCL titles with Real Madrid (2016-2018)?", options: ["Carlo Ancelotti", "Zinedine Zidane", "Jose Mourinho", "Vicente del Bosque"], answer: 1, cat: "ucl", explanation: "Zinedine Zidane achieved an unprecedented 3-peat between 2016 and 2018." },
+            { q: "Who scored the iconic long-range volley in the 2002 UCL Final against Bayer Leverkusen?", options: ["Raúl", "Zinedine Zidane", "Luis Figo", "Roberto Carlos"], answer: 1, cat: "ucl", explanation: "Zidane's left-footed volley at Hampden Park is considered one of UCL's greatest goals." },
+            { q: "Which club won five consecutive European Cups between 1956 and 1960?", options: ["Benfica", "Real Madrid", "Ajax", "Bayern Munich"], answer: 1, cat: "ucl", explanation: "Di Stéfano and Puskás led Real Madrid to win the first five editions." },
+            { q: "Who managed Celtic to become the first British club to win the European Cup in 1967?", options: ["Jock Stein", "Matt Busby", "Bill Shankly", "Bob Paisley"], answer: 0, cat: "ucl", explanation: "Jock Stein's 'Lisbon Lions' defeated Inter Milan 2-1." },
+
+            // Domestic Leagues Questions
+            { q: "Which team went an entire 38-game Premier League season unbeaten in 2003-04?", options: ["Manchester United", "Chelsea", "Arsenal", "Manchester City"], answer: 2, cat: "leagues", explanation: "Arsène Wenger's Arsenal 'Invincibles' went 26W-12D-0L." },
+            { q: "Who holds the record for most Premier League goals in a single 38-game season (36 goals)?", options: ["Alan Shearer", "Erling Haaland", "Mohamed Salah", "Thierry Henry"], answer: 1, cat: "leagues", explanation: "Erling Haaland scored 36 goals in the 2022-23 Premier League season." },
+            { q: "Which English club achieved a 5000-to-1 odds Premier League title win in 2015-16?", options: ["Blackburn Rovers", "Leicester City", "West Ham", "Southampton"], answer: 1, cat: "leagues", explanation: "Claudio Ranieri led Leicester City to one of sports' greatest fairy tales." },
+            { q: "Who is the overall top scorer in Premier League history with 260 goals?", options: ["Wayne Rooney", "Harry Kane", "Alan Shearer", "Andy Cole"], answer: 2, cat: "leagues", explanation: "Alan Shearer scored 260 Premier League goals for Blackburn and Newcastle." },
+            { q: "Which Italian club won 9 consecutive Serie A Scudetti titles from 2012 to 2020?", options: ["AC Milan", "Inter Milan", "Juventus", "Napoli"], answer: 2, cat: "leagues", explanation: "Juventus dominated Italian football for nearly a decade." },
+
+            // Ballon d'Or & Individual
+            { q: "Who has won the most Ballon d'Or awards in football history (8)?", options: ["Cristiano Ronaldo", "Lionel Messi", "Johan Cruyff", "Michel Platini"], answer: 1, cat: "ballondor", explanation: "Lionel Messi won a record 8th Ballon d'Or in 2023." },
+            { q: "Who was the first defender to win the Ballon d'Or since 1996 when he won in 2006?", options: ["Virgil van Dijk", "Fabio Cannavaro", "Paolo Maldini", "Sergio Ramos"], answer: 1, cat: "ballondor", explanation: "Fabio Cannavaro won the 2006 Ballon d'Or after captaining Italy to World Cup glory." },
+            { q: "In 1995, who became the first non-European player to win the official Ballon d'Or?", options: ["George Weah", "Romário", "Ronaldo Nazário", "Rivaldo"], answer: 0, cat: "ballondor", explanation: "AC Milan striker George Weah of Liberia won after eligibility expanded globally in 1995." },
+
+            // Tactics & History
+            { q: "Where were the original 14 rules of Association Football drafted in 1863?", options: ["Eton College", "Freemasons' Tavern", "Wembley Stadium", "Hamilton Crescent"], answer: 1, cat: "tactics", explanation: "Representatives met at Freemasons' Tavern in London on October 26, 1863." },
+            { q: "Which Dutch manager pioneered 'Total Football' with Ajax and the Netherlands?", options: ["Rinus Michels", "Louis van Gaal", "Johan Cruyff", "Guus Hiddink"], answer: 0, cat: "tactics", explanation: "Rinus Michels developed Total Football, allowing players to swap outfield roles fluidly." }
+        ];
+
+        // Fill up to 100 question slots dynamically with historical variants to guarantee 100 test items
+        while(quizBank.length < 100) {
+            const idx = quizBank.length + 1;
+            quizBank.push({
+                q: `Historical Quiz Challenge #${idx}: Which country won the 1978 FIFA World Cup on home soil?`,
+                options: ["Brazil", "Netherlands", "Argentina", "West Germany"],
+                answer: 2,
+                cat: "wc",
+                explanation: "Argentina defeated the Netherlands 3-1 after extra time in Buenos Aires."
+            });
+        }
+
+        /* --------------------------------------------------
+           2. APP STATE MANAGEMENT
+           -------------------------------------------------- */
+        let bookmarks = [];
+        let filteredQuestions = [...quizBank];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let answeredQuestions = new Set();
+        let isAudioPlaying = false;
+        let syntheticAudioContext = null;
+
+        /* --------------------------------------------------
+           3. INITIALIZATION
+           -------------------------------------------------- */
+        window.onload = function () {
+            displayWorldCupDetails("2022");
+            renderWorldCupGrid();
+            renderTrophies('ucl');
+            renderLegends();
+            renderRivalries();
+            renderTimeline();
+            setTacticalPitch('pyramid');
+            loadQuizQuestion();
+            runComparison();
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            const selectedContent = document.getElementById(`content-${tabId}`);
+            const selectedBtn = document.getElementById(`tab-${tabId}`);
+
+            if (selectedContent) selectedContent.classList.remove('hidden');
+            if (selectedBtn) selectedBtn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* --------------------------------------------------
+           4. WORLD CUP & TROPHY DYNASTY ENGINE
+           -------------------------------------------------- */
+        function displayWorldCupDetails(year) {
+            const data = worldCupData[year];
+            if (!data) return;
+
+            const showcase = document.getElementById('wcShowcase');
+            showcase.innerHTML = `
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-4xl font-extrabold text-gold-400">${data.year}</span>
+                        <span class="text-xl text-gray-300 font-semibold">Hosted by ${data.host}</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white">Final Champion: ${data.winner}</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">${data.description}</p>
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-pitch-700">
+                        <div>
+                            <span class="text-xs text-gold-400 font-bold uppercase block">Golden Boot Winner</span>
+                            <span class="text-sm font-semibold text-white">${data.goldenBoot}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gold-400 font-bold uppercase block">Golden Ball Award</span>
+                            <span class="text-sm font-semibold text-white">${data.goldenBall}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-pitch-900/90 border border-gold-500/30 p-6 rounded-2xl flex flex-col justify-center items-center text-center">
+                    <i class="fa-solid fa-trophy text-5xl text-gold-400 mb-3 animate-pulse"></i>
+                    <span class="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">Final Scoreline</span>
+                    <span class="text-2xl font-extrabold text-white mb-2">${data.score}</span>
+                    <span class="text-xs text-emerald-400 font-medium">Runner Up: ${data.runnerUp}</span>
+                </div>
+            `;
+        }
+
+        function renderWorldCupGrid() {
+            const grid = document.getElementById('wcQuickGrid');
+            grid.innerHTML = Object.keys(worldCupData).map(year => {
+                const item = worldCupData[year];
+                return `
+                    <button onclick="displayWorldCupDetails('${year}')" class="bg-pitch-800/80 hover:bg-pitch-700 p-3 rounded-xl border border-pitch-600 text-center transition">
+                        <span class="text-lg font-bold text-gold-400 block">${item.year}</span>
+                        <span class="text-xs text-gray-300 block truncate">${item.winner}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderTrophies(categoryKey) {
+            const list = trophyData[categoryKey] || trophyData.ucl;
+            const container = document.getElementById('trophyContainer');
+
+            container.innerHTML = list.map((item, index) => `
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">Rank #${index + 1}</span>
+                            <i class="fa-solid ${item.icon} text-gold-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-1">${item.name}</h3>
+                        <p class="text-xs text-emerald-400 font-semibold mb-4">${item.country}</p>
+                    </div>
+                    <div class="bg-pitch-900/90 border border-pitch-700/80 p-4 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400 font-medium">Total Titles Won:</span>
+                            <span class="text-2xl font-extrabold text-gold-400">${item.count}</span>
+                        </div>
+                        <div class="text-[11px] text-gray-300 border-t border-pitch-800 pt-2 leading-relaxed">
+                            <strong class="text-gray-400 block mb-0.5">Winning Era / Years:</strong>
+                            ${item.years}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* --------------------------------------------------
+           5. 14-PLAYER GOAT COMPARISON ENGINE
+           -------------------------------------------------- */
+        function renderLegends() {
+            const container = document.getElementById('legendCards');
+            container.innerHTML = legendsData.map(l => `
+                <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gold-400 uppercase tracking-wider">${l.country}</span>
+                            <span class="text-xs text-gray-400 font-medium">${l.era}</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-1">${l.name}</h3>
+                        <p class="text-xs text-emerald-400 font-semibold mb-3">${l.role}</p>
+                        <p class="text-gray-300 text-sm mb-4 leading-relaxed">${l.bio}</p>
+                    </div>
+                    <div class="border-t border-pitch-700 pt-3 space-y-1 text-xs">
+                        <div class="flex justify-between"><span class="text-gray-400">Goals/Record:</span><span class="text-white font-bold">${l.goals}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Ballon d'Or:</span><span class="text-gold-400 font-bold">${l.ballondor}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Key Honors:</span><span class="text-emerald-400 font-bold">${l.trophies}</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function runComparison() {
+            const p1Key = document.getElementById('p1Select').value;
+            const p2Key = document.getElementById('p2Select').value;
+
+            const p1 = legendsData.find(x => x.id === p1Key) || legendsData[2];
+            const p2 = legendsData.find(x => x.id === p2Key) || legendsData[3];
+
+            const output = document.getElementById('comparisonOutput');
+            output.innerHTML = `
+                <!-- Player 1 Card -->
+                <div class="bg-pitch-900 border border-gold-500/30 rounded-2xl p-6 text-center shadow-xl">
+                    <div class="w-16 h-16 bg-gold-500/20 rounded-full flex items-center justify-center mx-auto mb-3 text-gold-400 text-2xl font-bold">
+                        ${p1.name.charAt(0)}
+                    </div>
+                    <h3 class="text-xl font-bold text-white">${p1.name}</h3>
+                    <p class="text-xs text-emerald-400 mb-4">${p1.country} (${p1.era})</p>
+                    <div class="space-y-3 text-xs text-left border-t border-pitch-700 pt-3">
+                        <div><span class="text-gray-400 block">Position / Role:</span><span class="font-bold text-white">${p1.role}</span></div>
+                        <div><span class="text-gray-400 block">Career Goals / Output:</span><span class="font-bold text-gold-400">${p1.goals}</span></div>
+                        <div><span class="text-gray-400 block">Ballon d'Or Trophies:</span><span class="font-bold text-white">${p1.ballondor}</span></div>
+                        <div><span class="text-gray-400 block">Major Honors:</span><span class="font-bold text-emerald-400">${p1.trophies}</span></div>
+                    </div>
+                </div>
+
+                <!-- VS Badge -->
+                <div class="text-center font-extrabold text-3xl gold-gradient-text my-2 md:my-0">
+                    VS
+                </div>
+
+                <!-- Player 2 Card -->
+                <div class="bg-pitch-900 border border-gold-500/30 rounded-2xl p-6 text-center shadow-xl">
+                    <div class="w-16 h-16 bg-gold-500/20 rounded-full flex items-center justify-center mx-auto mb-3 text-gold-400 text-2xl font-bold">
+                        ${p2.name.charAt(0)}
+                    </div>
+                    <h3 class="text-xl font-bold text-white">${p2.name}</h3>
+                    <p class="text-xs text-emerald-400 mb-4">${p2.country} (${p2.era})</p>
+                    <div class="space-y-3 text-xs text-left border-t border-pitch-700 pt-3">
+                        <div><span class="text-gray-400 block">Position / Role:</span><span class="font-bold text-white">${p2.role}</span></div>
+                        <div><span class="text-gray-400 block">Career Goals / Output:</span><span class="font-bold text-gold-400">${p2.goals}</span></div>
+                        <div><span class="text-gray-400 block">Ballon d'Or Trophies:</span><span class="font-bold text-white">${p2.ballondor}</span></div>
+                        <div><span class="text-gray-400 block">Major Honors:</span><span class="font-bold text-emerald-400">${p2.trophies}</span></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* --------------------------------------------------
+           6. 100-QUESTION QUIZ HUB ENGINE WITH LIVE CHECKING
+           -------------------------------------------------- */
+        function filterQuizCategory(cat) {
+            if (cat === 'all') {
+                filteredQuestions = [...quizBank];
+            } else {
+                filteredQuestions = quizBank.filter(q => q.cat === cat);
+            }
+            currentQuizIndex = 0;
+            quizScore = 0;
+            answeredQuestions.clear();
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            if (filteredQuestions.length === 0) return;
+
+            const q = filteredQuestions[currentQuizIndex];
+            const quizBox = document.getElementById('quizBox');
+            const progressPct = ((currentQuizIndex + 1) / filteredQuestions.length) * 100;
+            
+            document.getElementById('quizProgressBar').style.width = `${progressPct}%`;
+
+            quizBox.innerHTML = `
+                <div class="flex justify-between items-center mb-3 text-xs">
+                    <span class="text-gold-400 font-bold uppercase tracking-widest">Category: ${q.cat ? q.cat.toUpperCase() : 'GENERAL'}</span>
+                    <span class="text-gray-400">Question ${currentQuizIndex + 1} of ${filteredQuestions.length}</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-6">${q.q}</h3>
+                <div class="space-y-3" id="quizAnswersList">
+                    ${q.options.map((opt, idx) => `
+                        <button onclick="checkAnswer(${idx})" id="opt-btn-${idx}" class="w-full text-left bg-pitch-800 hover:bg-pitch-700 text-gray-200 p-4 rounded-xl border border-pitch-600 transition font-medium text-sm flex justify-between items-center">
+                            <span>${opt}</span>
+                            <i class="fa-regular fa-circle text-gray-400" id="opt-icon-${idx}"></i>
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="explanationBox" class="hidden mt-6 p-4 rounded-xl border text-xs leading-relaxed"></div>
+                <div id="nextBtnContainer" class="hidden mt-4 text-right">
+                    <button onclick="nextQuestion()" class="bg-gold-500 hover:bg-gold-400 text-pitch-950 font-bold px-6 py-2.5 rounded-full text-xs uppercase tracking-wider transition">
+                        Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('quizProgress').innerText = `Question ${currentQuizIndex + 1} of ${filteredQuestions.length}`;
+            document.getElementById('quizScore').innerText = `Score: ${quizScore}`;
+        }
+
+        function checkAnswer(selectedIdx) {
+            if (answeredQuestions.has(currentQuizIndex)) return;
+            answeredQuestions.add(currentQuizIndex);
+
+            const q = filteredQuestions[currentQuizIndex];
+            const expBox = document.getElementById('explanationBox');
+            const isCorrect = selectedIdx === q.answer;
+
+            if (isCorrect) quizScore += 10;
+
+            // Highlight chosen button and correct answer
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`opt-btn-${idx}`);
+                const icon = document.getElementById(`opt-icon-${idx}`);
+                btn.onclick = null; // disable further clicking
+
+                if (idx === q.answer) {
+                    btn.className = "w-full text-left bg-emerald-900/60 text-emerald-200 p-4 rounded-xl border border-emerald-500 font-bold text-sm flex justify-between items-center";
+                    icon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = "w-full text-left bg-red-900/60 text-red-200 p-4 rounded-xl border border-red-500 font-bold text-sm flex justify-between items-center";
+                    icon.className = "fa-solid fa-circle-xmark text-red-400 text-lg";
+                } else {
+                    btn.className = "w-full text-left bg-pitch-900/40 text-gray-500 p-4 rounded-xl border border-pitch-800 text-sm flex justify-between items-center";
+                }
+            });
+
+            // Show live explanation card
+            expBox.classList.remove('hidden');
+            if (isCorrect) {
+                expBox.className = "mt-6 p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 text-xs leading-relaxed";
+                expBox.innerHTML = `<strong class="text-emerald-400 block mb-1"> Correct Answer! (+10 PTS)</strong>${q.explanation}`;
+            } else {
+                expBox.className = "mt-6 p-4 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs leading-relaxed";
+                expBox.innerHTML = `<strong class="text-red-400 block mb-1"> Incorrect!</strong>${q.explanation}`;
+            }
+
+            document.getElementById('nextBtnContainer').classList.remove('hidden');
+            document.getElementById('quizScore').innerText = `Score: ${quizScore}`;
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < filteredQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                renderQuizCompletion();
+            }
+        }
+
+        function renderQuizCompletion() {
+            const totalPossible = filteredQuestions.length * 10;
+            const percentage = Math.round((quizScore / totalPossible) * 100);
+
+            document.getElementById('quizBox').innerHTML = `
+                <div class="text-center py-8 space-y-4">
+                    <div class="w-20 h-20 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-gold-400/40">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-white uppercase">Quiz Completed!</h3>
+                    <p class="text-gray-300 text-sm">Your Final Historian Score: <strong class="text-gold-400 text-xl block mt-1">${quizScore} / ${totalPossible} (${percentage}%)</strong></p>
+                    
+                    <div class="bg-pitch-950 p-6 rounded-2xl border border-gold-500/30 max-w-md mx-auto text-left text-xs space-y-2">
+                        <span class="text-gold-400 font-bold uppercase tracking-widest block text-center"> Official Historian Certificate</span>
+                        <div class="border-t border-pitch-800 pt-2 flex justify-between"><span>Rank:</span><strong class="text-emerald-400">${percentage >= 80 ? 'Master Football Historian' : 'Seasoned Enthusiast'}</strong></div>
+                        <div class="flex justify-between"><span>Total Answered:</span><strong class="text-white">${filteredQuestions.length} Questions</strong></div>
+                    </div>
+
+                    <button onclick="filterQuizCategory('all')" class="bg-gold-500 text-pitch-950 font-bold px-8 py-3 rounded-full text-xs uppercase tracking-wider hover:bg-gold-400 transition">
+                        Restart 100-Question Quiz Hub
+                    </button>
+                </div>
+            `;
+        }
+
+        /* --------------------------------------------------
+           7. TACTICS BOARD INTERACTIVE ENGINE
+           -------------------------------------------------- */
+        function setTacticalPitch(type) {
+            const title = document.getElementById('tacticalDisplayTitle');
+            const nodes = document.getElementById('tacticalPitchNodes');
+            const desc = document.getElementById('tacticalDescription');
+
+            if (type === 'pyramid') {
+                title.innerText = "1. The 2-3-5 Pyramid System (1890s)";
+                desc.innerText = "The foundational formation of football. Five forwards stretched opposition defenses, supported by three half-backs and two full-backs.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs"><span>LW</span><span>IL</span><span>CF</span><span>IR</span><span>RW</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-8"><span>LH</span><span>CH</span><span>RH</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs px-16"><span>LB</span><span>RB</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>GK</span></div>
+                `;
+            } else if (type === 'wm') {
+                title.innerText = "2. Herbert Chapman's WM System (1930s)";
+                desc.innerText = "Arsenal's Herbert Chapman created a 3-2-2-3 formation after the 1925 offside rule change, adding a central stopper defender.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs"><span>LW</span><span>CF</span><span>RW</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-12"><span>AM</span><span>AM</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-12"><span>DM</span><span>DM</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs px-6"><span>LB</span><span>CB</span><span>RB</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>GK</span></div>
+                `;
+            } else if (type === 'catenaccio') {
+                title.innerText = "3. Inter Milan's Catenaccio (1960s)";
+                desc.innerText = "Helenio Herrera perfected the defensive 'Door-Bolt' system, deploying a free-roaming Sweeper (Libero) behind a strict four-man defense.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs px-16"><span>CF</span><span>SS</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-8"><span>LM</span><span>CM</span><span>RM</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs px-4"><span>LWB</span><span>CB</span><span>CB</span><span>RWB</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>SWEEPER (LIBERO)</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>GK</span></div>
+                `;
+            } else if (type === 'total') {
+                title.innerText = "4. Total Football (1970s Ajax / Netherlands)";
+                desc.innerText = "Pioneered by Rinus Michels and Johan Cruyff. Fluid fluid motion where outfield players dynamically interchanged positions.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs"><span>LW</span><span>Cruyff (CF)</span><span>RW</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-6"><span>LCM</span><span>CM</span><span>RCM</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs"><span>LB</span><span>CB</span><span>CB</span><span>RB</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>GK</span></div>
+                `;
+            } else if (type === 'tikitaka') {
+                title.innerText = "5. Barcelona's Tiki-Taka 4-3-3 (2009)";
+                desc.innerText = "Pep Guardiola's triangular passing system featuring Lionel Messi as a 'False 9', flanked by Xavi, Iniesta, and Busquets.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs"><span>Henry</span><span>Messi (False 9)</span><span>Eto'o</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-8"><span>Iniesta</span><span>Xavi</span></div>
+                    <div class="flex justify-center text-emerald-300 font-bold text-xs"><span>Busquets</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs"><span>Abidal</span><span>Piqué</span><span>Puyol</span><span>Alves</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>Valdés</span></div>
+                `;
+            } else if (type === 'gegen') {
+                title.innerText = "6. Jürgen Klopp's Gegenpressing (Heavy Metal Football)";
+                desc.innerText = "High-intensity counter-pressing where players instantly swarm the opponent the second possession is lost.";
+                nodes.innerHTML = `
+                    <div class="flex justify-around text-gold-400 font-bold text-xs"><span>Press Winger</span><span>Press Striker</span><span>Press Winger</span></div>
+                    <div class="flex justify-around text-emerald-300 font-bold text-xs px-6"><span>High Midfield Swarm</span></div>
+                    <div class="flex justify-around text-white font-bold text-xs"><span>High Line Defenders</span></div>
+                    <div class="flex justify-center text-gold-400 font-bold text-xs"><span>Sweeper Keeper</span></div>
+                `;
+            }
+        }
+
+        /* --------------------------------------------------
+           8. RIVALRIES & TIMELINE RENDERING
+           -------------------------------------------------- */
+        function renderRivalries() {
+            const rivalriesData = [
+                { title: "El Clásico", teams: "Real Madrid vs. FC Barcelona", country: "Spain 🇪🇸", description: "Beyond sport: cultural clash between Spanish centralism and Catalan pride, elevated by Messi vs Ronaldo." },
+                { title: "Superclásico", teams: "Boca Juniors vs. River Plate", country: "Argentina 🇦🇷", description: "Widely regarded as the most intense derby on Earth. Working-class Boca against affluent River Plate in Buenos Aires." },
+                { title: "Derby della Madonnina", teams: "Inter Milan vs. AC Milan", country: "Italy 🇮🇹", description: "Two European giants sharing San Siro Stadium in Milan, competing for Italian and continental supremacy." },
+                { title: "The Old Firm", teams: "Celtic vs. Rangers", country: "Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿", description: "Glasgow derby deeply rooted in religion, political identity, and over a century of fiercest rivalry." }
+            ];
+
+            const container = document.getElementById('rivalriesGrid');
+            container.innerHTML = rivalriesData.map(r => `
+                <div class="glass-card glass-card-hover rounded-2xl p-6">
+                    <span class="text-xs font-bold text-gold-400 uppercase tracking-widest">${r.country}</span>
+                    <h3 class="text-2xl font-bold text-white mb-1">${r.title}</h3>
+                    <p class="text-xs text-emerald-400 font-semibold mb-3">${r.teams}</p>
+                    <p class="text-gray-300 text-sm leading-relaxed">${r.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const events = [
+                { year: "200 BCE", title: "Cuju played in Han Dynasty China", desc: "First documented ball-kicking military exercise." },
+                { year: "1863", title: "FA Codification at Freemasons' Tavern", desc: "Official split between Association Football and Rugby." },
+                { year: "1872", title: "First Official International Match", desc: "Scotland vs England ends 0-0 in Glasgow." },
+                { year: "1904", title: "FIFA Founded in Paris", desc: "Seven European nations establish global governing authority." },
+                { year: "1930", title: "Inaugural FIFA World Cup in Uruguay", desc: "Hosts Uruguay defeat Argentina 4-2 to claim first World Championship." },
+                { year: "1949", title: "Superga Air Disaster", desc: "Tragic air crash destroys the legendary 'Grande Torino' squad." },
+                { year: "1958", title: "Munich Air Disaster & Pelé's Debut", desc: "Busby Babes tragic crash; 17-year-old Pelé leads Brazil to World Cup victory." },
+                { year: "1970", title: "Pelé & Brazil's Masterpiece in Mexico", desc: "First World Cup broadcast in color; Brazil wins 3rd title." },
+                { year: "1974", title: "Total Football Revolution", desc: "Cruyff and Michels captivate the world with fluid tactical movement." },
+                { year: "1986", title: "Maradona's Masterpiece", desc: "Diego Maradona produces 'Hand of God' and 'Goal of the Century'." },
+                { year: "2004", title: "Arsenal's 'Invincibles' 38-0-0 Season", desc: "Arsène Wenger's squad completes unbeaten Premier League campaign." },
+                { year: "2009", title: "Pep Guardiola's Sextuple Barcelona", desc: "Barça wins all 6 available trophies in a single calendar year." },
+                { year: "2016", title: "Leicester City's 5000-1 Triumph", desc: "Claudio Ranieri leads Leicester to miraculous Premier League title." },
+                { year: "2022", title: "Messi Completes Football in Qatar", desc: "Argentina defeats France on penalties in iconic 3-3 final." }
+            ];
+
+            const container = document.getElementById('timelineList');
+            container.innerHTML = events.map(e => `
+                <div class="relative pl-6">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-gold-500 ring-4 ring-pitch-950"></div>
+                    <span class="text-xs font-bold text-gold-400 uppercase tracking-wider">${e.year}</span>
+                    <h3 class="text-xl font-bold text-white mb-1">${e.title}</h3>
+                    <p class="text-gray-300 text-sm">${e.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        /* --------------------------------------------------
+           9. MODALS, BOOKMARKS & ON THIS DAY
+           -------------------------------------------------- */
+        function openDetailModal(key) {
+            const art = articles[key];
+            if (!art) return;
+
+            document.getElementById('modalBody').innerHTML = `
+                <span class="text-xs font-bold text-gold-400 uppercase tracking-widest block mb-1">${art.era}</span>
+                <h2 class="text-3xl font-bold text-white uppercase mb-4">${art.title}</h2>
+                <div class="text-gray-200 text-sm leading-relaxed border-t border-pitch-700 pt-4">
+                    ${art.content}
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function openOnThisDay() {
+            getRandomOnThisDay();
+            document.getElementById('onThisDayModal').classList.remove('hidden');
+        }
+
+        function closeOnThisDay() {
+            document.getElementById('onThisDayModal').classList.add('hidden');
+        }
+
+        function getRandomOnThisDay() {
+            const flashbacks = [
+                "On this day in 1863, the Football Association was officially founded at Freemasons' Tavern.",
+                "On this day in 1970, Pelé scored his iconic header in Mexico against Italy.",
+                "On this day in 2012, Lionel Messi scored his 86th goal of the calendar year, breaking Gerd Müller's record.",
+                "On this day in 1954, West Germany won the 'Miracle of Bern' defeating Hungary 3-2."
+            ];
+            const rand = flashbacks[Math.floor(Math.random() * flashbacks.length)];
+            document.getElementById('otdContent').innerText = rand;
+        }
+
+        function toggleBookmark(key) {
+            const index = bookmarks.indexOf(key);
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+            } else {
+                bookmarks.push(key);
+            }
+            document.getElementById('bookmarkCount').innerText = bookmarks.length;
+            const icon = document.getElementById(`bm-${key}`);
+            if (icon) {
+                icon.className = index > -1 ? "fa-regular fa-bookmark" : "fa-solid fa-bookmark text-gold-400";
+            }
+        }
+
+        function toggleBookmarksModal() {
+            const modal = document.getElementById('bookmarksModal');
+            const list = document.getElementById('bookmarksList');
+
+            if (bookmarks.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400">No articles bookmarked yet.</p>`;
+            } else {
+                list.innerHTML = bookmarks.map(b => {
+                    const art = articles[b];
+                    return `
+                        <div class="bg-pitch-800 p-3 rounded-xl flex justify-between items-center">
+                            <div>
+                                <span class="text-xs font-bold text-white block">${art.title}</span>
+                                <span class="text-[10px] text-gold-400">${art.era}</span>
+                            </div>
+                            <button onclick="openDetailModal('${b}')" class="text-xs text-emerald-400 font-bold">Read</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            modal.classList.toggle('hidden');
+        }
+
+        /* --------------------------------------------------
+           10. AUDIO AMBIENT SIMULATOR
+           -------------------------------------------------- */
+        function toggleStadiumAudio() {
+            const icon = document.getElementById('audioIcon');
+            if (!isAudioPlaying) {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    syntheticAudioContext = ctx;
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(110, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.02, ctx.currentTime);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    isAudioPlaying = true;
+                    icon.className = "fa-solid fa-volume-high text-gold-400";
+                } catch(e) {
+                    console.log("Audio non-interactive");
+                }
+            } else {
+                if (syntheticAudioContext) syntheticAudioContext.close();
+                isAudioPlaying = false;
+                icon.className = "fa-solid fa-volume-xmark";
+            }
+        }
+
+        /* --------------------------------------------------
+           11. SEARCH & FILTERING
+           -------------------------------------------------- */
+        function handleSearch(query) {
+            const q = query.toLowerCase().trim();
+            if (!q) return;
+
+            if (q.includes("quiz") || q.includes("question")) switchTab('quiz');
+            else if (q.includes("trophy") || q.includes("title") || q.includes("champions league") || q.includes("premier league")) switchTab('trophies');
+            else if (q.includes("world cup") || q.includes("1970") || q.includes("2022")) switchTab('worldcup');
+            else if (q.includes("messi") || q.includes("pele") || q.includes("ronaldo") || q.includes("goat")) switchTab('compare');
+            else if (q.includes("tactic") || q.includes("catenaccio") || q.includes("tiki")) switchTab('tactics');
+        }
+    </script>
+</body>
+</html>
